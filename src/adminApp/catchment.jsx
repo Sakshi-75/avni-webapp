@@ -13,6 +13,9 @@ import {
   Filter,
   FunctionField,
   useRecordContext,
+  TopToolbar,
+  CreateButton,
+  useListContext,
 } from "react-admin";
 import { useFormContext, useWatch } from "react-hook-form";
 import { Typography, Chip, Paper } from "@mui/material";
@@ -23,6 +26,7 @@ import { DocumentationContainer } from "../common/components/DocumentationContai
 import { AvniTextInput } from "./components/AvniTextInput";
 import { ToolTipContainer } from "../common/components/ToolTipContainer";
 import { createdAudit, modifiedAudit } from "./components/AuditUtil";
+import { CustomExportButton } from "./components/CustomExportButton";
 import {
   StyledBox,
   StyledTextInput,
@@ -104,6 +108,22 @@ export const CatchmentDetail = (props) => (
   </StyledShow>
 );
 
+const CatchmentListActions = () => {
+  const { resource } = useListContext();
+
+  const catchmentFields = [
+    { source: "id", label: "ID" },
+    { source: "name", label: "Catchment" },
+  ];
+
+  return (
+    <TopToolbar>
+      <CreateButton />
+      <CustomExportButton fields={catchmentFields} resource={resource} />
+    </TopToolbar>
+  );
+};
+
 export const CatchmentList = (props) => (
   <StyledBox>
     <List
@@ -112,6 +132,7 @@ export const CatchmentList = (props) => (
       filters={<CatchmentFilter />}
       sort={{ field: "id", order: "DESC" }}
       pagination={<PrettyPagination />}
+      actions={<CatchmentListActions />}
     >
       <Datagrid rowClick="show" bulkActionButtons={false} sx={datagridStyles}>
         <TextField label="Catchment" source="name" />

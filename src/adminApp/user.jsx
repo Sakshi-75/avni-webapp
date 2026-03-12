@@ -33,10 +33,14 @@ import {
   TextInput,
   useRecordContext,
   useResourceContext,
+  TopToolbar,
+  CreateButton,
+  useListContext,
 } from "react-admin";
 import { useFormContext, useWatch } from "react-hook-form";
 import { Paper, Grid, Chip, Typography, CardActions } from "@mui/material";
 import { CatchmentSelectInput } from "./components/CatchmentSelectInput";
+import { CustomExportButton } from "./components/CustomExportButton";
 import { LineBreak } from "../common/components/utils";
 import {
   datePickerModes,
@@ -133,6 +137,24 @@ export const UserEdit = ({ organisation, ...props }) => (
   </Edit>
 );
 
+const UserListActions = () => {
+  const { resource } = useListContext();
+
+  const userFields = [
+    { source: "id", label: "ID" },
+    { source: "username", label: "Login ID" },
+    { source: "name", label: "Name of the Person" },
+    { source: "email", label: "Email Address" },
+    { source: "phoneNumber", label: "Phone Number" },
+  ];
+
+  return (
+    <TopToolbar>
+      <CustomExportButton fields={userFields} resource={resource} />
+    </TopToolbar>
+  );
+};
+
 export const UserList = ({ ...props }) => {
   const { organisation } = useContext(OrgManagerContext);
   return (
@@ -145,6 +167,7 @@ export const UserList = ({ ...props }) => {
         title={`${organisation.name} Users`}
         sort={{ field: "id", order: "DESC" }}
         pagination={<PrettyPagination />}
+        actions={<UserListActions />}
       >
         <Datagrid rowClick="show" bulkActionButtons={false} sx={datagridStyles}>
           <TextField label="Login ID" source="username" />

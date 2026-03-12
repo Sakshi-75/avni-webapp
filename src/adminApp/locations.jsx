@@ -35,6 +35,7 @@ import { DocumentationContainer } from "../common/components/DocumentationContai
 import { AvniTextInput } from "./components/AvniTextInput";
 import { Paper } from "@mui/material";
 import { createdAudit, modifiedAudit } from "./components/AuditUtil";
+import { CustomExportButton } from "./components/CustomExportButton";
 import {
   StyledBox,
   datagridStyles,
@@ -47,10 +48,18 @@ import { PrettyPagination } from "./Util/PrettyPagination.tsx";
 const CustomListActions = () => {
   const { total, resource } = useListContext();
 
+  const locationFields = [
+    { source: "id", label: "ID" },
+    { source: "title", label: "Title" },
+    { source: "titleLineage", label: "Title Lineage" },
+    { source: "typeString", label: "Type" },
+    { source: "parentId", label: "Parent ID" },
+  ];
+
   return (
     <TopToolbar>
       <CreateButton />
-      <ExportButton disabled={total === 0} resource={resource} />
+      <CustomExportButton fields={locationFields} resource={resource} />
     </TopToolbar>
   );
 };

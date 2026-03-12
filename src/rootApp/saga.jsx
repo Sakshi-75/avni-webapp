@@ -110,9 +110,28 @@ function* setAdminOrgsWorker() {
   yield put(setAdminOrgs(organisations));
 }
 
+let isLoggingOut = false;
+
 function* logoutWorker() {
+  if (isLoggingOut) {
+    console.log("Logout already in progress, skipping");
+    return;
+  }
+
+  isLoggingOut = true;
+
   try {
     yield call(api.logout);
+
+    // Skip Auth.signOut for IDP type 'none'
+    try {
+      if (http.idp?.idpType === "cognito") {
+        yield call([Auth, Auth.signOut]);
+      }
+    } catch (authError) {
+      console.log("Auth.signOut skipped or failed:", authError);
+    }
+
     // Preserve version key to prevent false migration messages after logout
     const versionKey = localStorage.getItem("avni_app_version");
     localStorage.clear();
@@ -121,14 +140,13 @@ function* logoutWorker() {
     }
     clearCookies();
 
-    yield call([authProvider, authProvider.logout], {});
-
-    yield call([Auth, Auth.signOut]);
-
-    window.location.href = "/";
+    // Force reload to login page
+    window.location.replace("/");
   } catch (e) {
     console.error("Logout failed:", e);
-    window.location.href = "/";
+    localStorage.clear();
+    clearCookies();
+    window.location.replace("/");
   }
 }
 

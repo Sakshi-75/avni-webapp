@@ -13,6 +13,9 @@ import {
   TextField,
   Toolbar,
   useRecordContext,
+  TopToolbar,
+  CreateButton,
+  useListContext,
 } from "react-admin";
 import { None } from "../common/components/utils";
 import { isNil } from "lodash";
@@ -22,6 +25,7 @@ import { AvniTextInput } from "./components/AvniTextInput";
 import { Box, Paper, Typography } from "@mui/material";
 import { AvniReferenceInput } from "./components/AvniReferenceInput";
 import { createdAudit, modifiedAudit } from "./components/AuditUtil";
+import { CustomExportButton } from "./components/CustomExportButton";
 import { ToolTipContainer } from "../common/components/ToolTipContainer";
 import {
   datagridStyles,
@@ -32,6 +36,32 @@ import {
 } from "./Util/Styles";
 import { PrettyPagination } from "./Util/PrettyPagination.tsx";
 
+const LocationTypeListActions = () => {
+  const { resource } = useListContext();
+
+  const locationTypeFields = [
+    { source: "id", label: "ID" },
+    { source: "uuid", label: "UUID" },
+    { source: "name", label: "Location Type" },
+    { source: "level", label: "Level" },
+    { source: "parentId", label: "Parent ID" },
+    { source: "organisationId", label: "Organisation ID" },
+    { source: "voided", label: "Voided" },
+    { source: "version", label: "Version" },
+    { source: "createdBy", label: "Created By" },
+    { source: "lastModifiedBy", label: "Last Modified By" },
+    { source: "createdDateTime", label: "Created Date Time" },
+    { source: "lastModifiedDateTime", label: "Last Modified Date Time" },
+  ];
+
+  return (
+    <TopToolbar>
+      <CreateButton />
+      <CustomExportButton fields={locationTypeFields} resource={resource} />
+    </TopToolbar>
+  );
+};
+
 export const LocationTypeList = (props) => (
   <StyledBox>
     <List
@@ -39,6 +69,7 @@ export const LocationTypeList = (props) => (
       title="Location Types"
       sort={{ field: "level", order: "DESC" }}
       pagination={<PrettyPagination />}
+      actions={<LocationTypeListActions />}
     >
       <Datagrid rowClick="show" bulkActionButtons={false} sx={datagridStyles}>
         <TextField label="Location Type" source="name" />
