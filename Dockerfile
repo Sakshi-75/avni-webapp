@@ -1,6 +1,6 @@
 FROM node:24-alpine AS build
 WORKDIR /app
-RUN apk add --no-cache python3 make g++
+RUN apk add --no-cache python3 make g++ git
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 COPY . .
